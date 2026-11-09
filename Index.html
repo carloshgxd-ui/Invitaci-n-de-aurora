@@ -1,0 +1,353 @@
+```html
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bautizo de Aurora Samira</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pearl: '#FDFBF7',
+                        pearlDark: '#F7F3EC',
+                        rosePale: '#E8C5C8',
+                        roseDust: '#D8A7AB',
+                        roseSoft: '#FAF0F1',
+                        goldMain: '#D4AF37',
+                        goldLight: '#F3E5AB',
+                        goldDark: '#997A15',
+                    },
+                    fontFamily: {
+                        script: ['Pinyon Script', 'cursive'],
+                        serif: ['Cinzel', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                        cally: ['Alex Brush', 'cursive']
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-reverse': 'floatRev 7s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'spin-slow': 'spin 25s linear infinite',
+                        'shimmer': 'shimmer 2.5s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-12px) rotate(1deg)' },
+                        },
+                        floatRev: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(10px) rotate(-1deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
+                            '50%': { opacity: '0.95', transform: 'scale(1.05)' },
+                        },
+                        shimmer: {
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos tipográficos y gradientes dorados de lujo */
+        .text-gold-metallic {
+            background: linear-gradient(135deg, #A88018 0%, #E6C665 35%, #D4AF37 50%, #FAF0BD 65%, #997A15 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 2px 4px rgba(212, 175, 55, 0.15));
+        }
+
+        .gold-border-gradient {
+            border-image: linear-gradient(135deg, #D4AF37, #F3E5AB, #AA7C11) 1;
+        }
+
+        .pearl-card {
+            background: rgba(253, 251, 247, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.28);
+            box-shadow: 0 15px 35px -5px rgba(216, 167, 171, 0.15), 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .cloud-shape {
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.8) 0%, rgba(253,251,247,0) 70%);
+        }
+
+        /* Animación Fade In al hacer Scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Canvas estelar en segundo plano */
+        #heaven-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Scrollbar suave */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D8A7AB;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-pearl font-sans text-gray-700 antialiased selection:bg-rosePale selection:text-white relative overflow-x-hidden">
+
+    <!-- Canvas de partículas, estrellas y destellos -->
+    <canvas id="heaven-canvas"></canvas>
+
+    <!-- Botón Flotante de Audio Instrumental Celestial -->
+    <button id="audio-btn" onclick="toggleAudio()" class="fixed bottom-6 right-6 z-40 bg-white/90 border border-goldMain/50 p-3.5 rounded-full shadow-2xl text-goldDark hover:scale-110 transition-all duration-300 flex items-center gap-2 group backdrop-blur-md" title="Música celestial">
+        <i id="audio-icon" data-lucide="music" class="w-5 h-5 text-goldMain"></i>
+        <span id="audio-label" class="text-xs font-serif font-medium text-goldDark max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-500">Música Celestial</span>
+    </button>
+
+    <!-- ================= 1. PANTALLA DE BIENVENIDA (MODAL OVERLAY) ================= -->
+    <div id="welcome-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-pearl/95 backdrop-blur-xl transition-opacity duration-1000">
+        <div class="max-w-md w-full text-center relative z-10 flex flex-col items-center">
+            
+            <!-- Resplandor y Ala celestial superpuesta -->
+            <div class="relative w-64 h-64 mb-6 flex items-center justify-center">
+                <!-- Aura de Luz -->
+                <div class="absolute inset-0 rounded-full bg-rosePale/40 blur-2xl animate-pulse-glow"></div>
+                
+                <!-- Anillo Rotatorio Dorado -->
+                <div class="absolute inset-0 rounded-full border border-dashed border-goldMain/50 animate-spin-slow"></div>
+                <div class="absolute inset-2 rounded-full border border-goldMain/30"></div>
+
+                <!-- Foto de Portada (Bebé) -->
+                <img src="1000479970.jpg" alt="Aurora Samira" class="w-52 h-52 object-cover rounded-full border-4 border-white shadow-2xl relative z-10">
+
+                <!-- Alas SVG de ángel tras la foto -->
+                <svg class="absolute -bottom-6 w-48 text-goldMain/80 z-20 filter drop-shadow-md" viewBox="0 0 100 40" fill="currentColor">
+                    <path d="M50 22 C30 5, 8 8, 0 25 C15 26, 25 36, 50 22 Z" />
+                    <path d="M50 22 C70 5, 92 8, 100 25 C85 26, 75 36, 50 22 Z" />
+                </svg>
+            </div>
+
+            <!-- Títulos celestiales -->
+            <p class="font-serif italic text-roseDust text-sm tracking-widest uppercase mb-1">Nos complace invitarte al</p>
+            <h1 class="font-cally text-5xl md:text-6xl text-gold-metallic my-1 font-bold">Santo Bautismo</h1>
+            <p class="font-serif text-xs text-gray-500 tracking-[0.3em] uppercase mb-8">de</p>
+            <h2 class="font-script text-6xl text-goldDark mb-8">Aurora Samira</h2>
+
+            <!-- Botón Animado Abrir Invitación -->
+            <button onclick="openInvitation()" class="group relative px-9 py-4 bg-gradient-to-r from-goldMain via-goldLight to-goldDark text-white font-serif tracking-widest text-xs font-semibold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-3 overflow-hidden">
+                <span class="relative z-10">ABRIR INVITACIÓN</span>
+                <i data-lucide="sparkles" class="w-4 h-4 text-white relative z-10 group-hover:rotate-45 transition-transform duration-300"></i>
+                <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================= CONTENIDO PRINCIPAL DE LA INVITACIÓN ================= -->
+    <main id="main-content" class="relative z-10 max-w-2xl mx-auto px-4 py-12 space-y-20">
+
+        <!-- ================= 2. ENCABEZADO Y FRASE PRINCIPAL ================= -->
+        <section class="reveal text-center pt-6 flex flex-col items-center">
+            
+            <!-- Cruz Dorada Elegante -->
+            <div class="mb-6 text-goldMain relative animate-float-slow">
+                <svg class="w-10 h-14 mx-auto filter drop-shadow-md" viewBox="0 0 100 140" fill="currentColor">
+                    <path d="M42 0 H58 V40 H88 V56 H58 V140 H42 V56 H12 V40 H42 Z" />
+                    <circle cx="50" cy="48" r="22" fill="none" stroke="#F3E5AB" stroke-width="2.5" opacity="0.8"/>
+                </svg>
+            </div>
+
+            <span class="font-serif text-xs tracking-[0.3em] text-roseDust uppercase mb-2">Mi Primer Sacramento</span>
+            <h1 class="font-script text-7xl md:text-8xl text-gold-metallic font-bold mb-4">Aurora Samira</h1>
+            <p class="font-serif text-sm tracking-widest text-gray-500 uppercase mb-8">Hernández Flores</p>
+            
+            <div class="w-32 h-0.5 bg-gradient-to-r from-transparent via-goldMain to-transparent mb-10"></div>
+
+            <!-- Tarjeta Frase Principal -->
+            <div class="pearl-card p-8 rounded-3xl text-center relative overflow-hidden group">
+                <div class="absolute -top-10 -left-10 w-24 h-24 text-rosePale/30">
+                    <svg viewBox="0 0 100 100" fill="currentColor"><path d="M 0,0 L 100,0 C 50,50 50,50 0,100 Z"/></svg>
+                </div>
+                <div class="absolute -bottom-10 -right-10 w-24 h-24 text-rosePale/30 rotate-180">
+                    <svg viewBox="0 0 100 100" fill="currentColor"><path d="M 0,0 L 100,0 C 50,50 50,50 0,100 Z"/></svg>
+                </div>
+
+                <p class="font-cally text-3xl md:text-4xl text-goldDark leading-relaxed">
+                    «Dios me ha regalado la bendición de llegar a sus vidas. Acompáñenme a recibir mi primer sacramento: el Bautismo».
+                </p>
+            </div>
+        </section>
+
+        <!-- ================= 3. CONTADOR REGRESIVO ================= -->
+        <section class="reveal text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-roseSoft border border-rosePale/60 text-roseDust text-xs font-serif mb-4">
+                <i data-lucide="calendar" class="w-4 h-4 text-goldMain"></i>
+                <span>SÁBADO 12 DE DICIEMBRE DE 2026</span>
+            </div>
+            
+            <h3 class="font-serif text-lg text-gray-700 tracking-wide mb-6">Faltan tan solo</h3>
+
+            <div id="countdown" class="grid grid-cols-4 gap-2 md:gap-4 max-w-lg mx-auto">
+                <div class="pearl-card p-4 rounded-2xl shadow-sm border border-goldMain/20">
+                    <span id="cd-days" class="block font-serif text-2xl md:text-4xl font-bold text-goldDark">00</span>
+                    <span class="text-[10px] md:text-xs text-gray-400 font-medium tracking-widest uppercase">Días</span>
+                </div>
+                <div class="pearl-card p-4 rounded-2xl shadow-sm border border-goldMain/20">
+                    <span id="cd-hours" class="block font-serif text-2xl md:text-4xl font-bold text-goldDark">00</span>
+                    <span class="text-[10px] md:text-xs text-gray-400 font-medium tracking-widest uppercase">Horas</span>
+                </div>
+                <div class="pearl-card p-4 rounded-2xl shadow-sm border border-goldMain/20">
+                    <span id="cd-minutes" class="block font-serif text-2xl md:text-4xl font-bold text-goldDark">00</span>
+                    <span class="text-[10px] md:text-xs text-gray-400 font-medium tracking-widest uppercase">Min</span>
+                </div>
+                <div class="pearl-card p-4 rounded-2xl shadow-sm border border-goldMain/20">
+                    <span id="cd-seconds" class="block font-serif text-2xl md:text-4xl font-bold text-goldDark">00</span>
+                    <span class="text-[10px] md:text-xs text-gray-400 font-medium tracking-widest uppercase">Seg</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 4. PADRES Y PADRINO ================= -->
+        <section class="reveal space-y-6">
+            <div class="text-center">
+                <span class="font-cally text-3xl text-roseDust">Con el amor de</span>
+                <h3 class="font-serif text-2xl text-gold-metallic font-bold tracking-wide uppercase">Mis Padres y Padrino</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <!-- Padres -->
+                <div class="pearl-card p-7 rounded-3xl text-center space-y-4 relative overflow-hidden">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-roseSoft flex items-center justify-center text-roseDust border border-rosePale/40 shadow-inner">
+                        <i data-lucide="heart" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-serif text-xs tracking-[0.2em] text-goldDark font-bold uppercase">Mis Padres</h4>
+                    <div class="text-gray-700 font-serif space-y-1">
+                        <p class="font-semibold text-base">Juan Carlos Hernández González</p>
+                        <p class="text-xs text-roseDust italic font-sans">&</p>
+                        <p class="font-semibold text-base">María Fernanda Flores Vázquez</p>
+                    </div>
+                </div>
+
+                <!-- Padrino -->
+                <div class="pearl-card p-7 rounded-3xl text-center space-y-4 relative overflow-hidden flex flex-col justify-center">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-roseSoft flex items-center justify-center text-roseDust border border-rosePale/40 shadow-inner">
+                        <i data-lucide="sparkle" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-serif text-xs tracking-[0.2em] text-goldDark font-bold uppercase">Mi Padrino</h4>
+                    <div class="text-gray-700 font-serif">
+                        <p class="font-semibold text-base">Mauricio Hernández González</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 5. MISAS Y FESTEJO ================= -->
+        <section class="reveal space-y-6">
+            <div class="text-center">
+                <span class="font-cally text-3xl text-roseDust">¿Dónde y Cuándo?</span>
+                <h3 class="font-serif text-2xl text-gold-metallic font-bold tracking-wide uppercase">Ubicación del Evento</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Ceremonia Religiosa -->
+                <div class="pearl-card p-7 rounded-3xl space-y-4 flex flex-col justify-between border-l-4 border-l-goldMain">
+                    <div>
+                        <div class="flex items-center gap-3 text-goldDark mb-3">
+                            <div class="p-2.5 rounded-xl bg-goldLight/30 text-goldDark">
+                                <i data-lucide="church" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] tracking-widest uppercase text-gray-400 block font-serif">Misa Sagrada</span>
+                                <h4 class="font-serif font-bold text-lg text-gray-800">Ceremonia Religiosa</h4>
+                            </div>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-800 font-serif">Iglesia Católica de la Rivera</p>
+                        <div class="mt-3 text-xs text-gray-600 flex items-center gap-2">
+                            <i data-lucide="clock" class="w-4 h-4 text-roseDust"></i>
+                            <span>Sábado 12 de Dic • 9:00 a. m.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recepción / Festejo -->
+                <div class="pearl-card p-7 rounded-3xl space-y-4 flex flex-col justify-between border-l-4 border-l-roseDust">
+                    <div>
+                        <div class="flex items-center gap-3 text-goldDark mb-3">
+                            <div class="p-2.5 rounded-xl bg-roseSoft text-roseDust">
+                                <i data-lucide="party-popper" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] tracking-widest uppercase text-gray-400 block font-serif">Celebración</span>
+                                <h4 class="font-serif font-bold text-lg text-gray-800">Lugar del Festejo</h4>
+                            </div>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-800 font-serif">Salón Santa Margarita</p>
+                        <p class="text-xs text-gray-600 mt-2 leading-relaxed">
+                            Calle Providencia #86, Colonia Santa Margarita.
+                        </p>
+                    </div>
+
+                    <!-- Botón Google Maps -->
+                    <a href="https://maps.google.com/?q=Calle+Providencia+86,+Colonia+Santa+Margarita" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center justify-center gap-2 w-full py-3.5 px-4 bg-gradient-to-r from-goldMain to-goldDark text-white rounded-xl text-xs font-serif font-semibold tracking-wider hover:opacity-95 transition-all shadow-md group">
+                        <i data-lucide="map-pin" class="w-4 h-4 group-hover:animate-bounce"></i>
+                        <span>ABRIR EN GOOGLE MAPS</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 6. CONFIRMAR ASISTENCIA (WHATSAPP) ================= -->
+        <section class="reveal pearl-card p-8 md:p-10 rounded-3xl text-center space-y-5 border border-rosePale relative overflow-hidden">
+            <div class="w-14 h-14 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-inner border border-emerald-100">
+                <i data-lucide="message-circle-heart" class="w-7 h-7"></i>
+            </div>
+            
+            <h3 class="font-serif text-2xl text-gray-800 font-bold">Confirmación de Asistencia</h3>
+            <p class="text-xs md:text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
+                Su presencia llenará de alegría este inolvidable día. Por favor confirmen su asistencia a través de WhatsApp.
+            </p>
+            
+            <a href="https://wa.me/?text=%C2%A1Hola!%20Confirmo%20con%20mucha%20alegr%C3%ADa%20mi%20asistencia%20al%20Bautizo%20de%20Aurora%20Samira%20el%2012%20de%20diciembre%20de%202026." target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-emerald-600 text-white font-serif text-xs tracking-widest font-semibold rounded-full shadow-lg hover:bg-emerald-700 hover:scale-105 transition-all">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span>CONFIRMAR POR WHATSAPP</span>
+            </a>
+        </section>
+
+        <!-- ================= 7. GALERÍA FOTOGRÁFICA DE AURORA ================= -->
+        <section class="reveal space-y-6">
+            <div class="text-center">
+                <span class="font-cally text-3xl text-roseDust">Recuerdos tiernos</span>
+                <h3 class="font-serif text-2xl text-gold-metallic font-bo
